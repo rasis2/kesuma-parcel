@@ -23,10 +23,30 @@
     </div>
     <div class="section animate-in" style="animation-delay:0.1s">
       <div class="section-title" id="txt-info-section"></div>
+      <!-- Step 1: Floor -->
       <div class="field">
-        <label id="txt-unit-label"></label>
-        <div class="select-wrap"><select id="unit"></select></div>
+        <label id="txt-floor-label"></label>
+        <div class="select-wrap">
+          <select id="floorSelect" onchange="onFloorChange()">
+            <option value="" id="opt-floor-placeholder"></option>
+          </select>
+        </div>
       </div>
+      <!-- Step 2: Unit number (shown after floor selected) -->
+      <div class="field" id="unitField" style="display:none">
+        <label id="txt-unit-label"></label>
+        <div class="select-wrap">
+          <select id="unitSelect" onchange="onUnitChange()">
+            <option value=""></option>
+          </select>
+        </div>
+      </div>
+      <!-- Confirm badge -->
+      <div id="unitConfirm" style="display:none;margin-top:-6px;margin-bottom:12px;padding:10px 14px;background:var(--accent-dim);border:1px solid rgba(var(--accent-rgb),0.25);border-radius:8px">
+        <span style="font-size:12px;color:var(--text-muted)" id="txt-unit-confirm-label"></span>
+        <span id="unitConfirmVal" style="font-family:JetBrains Mono,monospace;font-size:14px;font-weight:600;color:var(--accent);margin-left:8px"></span>
+      </div>
+      <input type="hidden" id="unit">
       <div class="field">
         <label id="txt-courier-label"></label>
         <div class="select-wrap">
@@ -69,17 +89,60 @@
     document.getElementById('txt-pin-label').textContent = t('disp_pin_label')
     document.getElementById('dispPin').placeholder = t('disp_pin_placeholder')
     document.getElementById('txt-info-section').textContent = t('disp_info_section')
-    document.getElementById('txt-unit-label').textContent = t('disp_unit_label')
+    document.getElementById('txt-floor-label').textContent = t('disp_floor_label')
+    document.getElementById('txt-unit-label').textContent = t('disp_unitnum_label')
+    document.getElementById('txt-unit-confirm-label').textContent = t('disp_unit_confirm')
     document.getElementById('txt-courier-label').textContent = t('disp_courier_label')
     document.getElementById('txt-image-label').textContent = t('disp_image_label')
     document.getElementById('txt-snap-hint').textContent = '📷 ' + t('snap_hint')
     document.getElementById('txt-submit').textContent = '✓  ' + t('submit')
     document.getElementById('txt-enlarge-hint').textContent = t('enlarge_hint')
 
-    const sel = document.getElementById('unit')
-    sel.innerHTML = '<option value="">'+t('disp_unit_placeholder')+'</option>'
-    for (let i=1;i<=25;i++) for (let j=1;j<=25;j++) {
-      const o=document.createElement('option'); o.value=`${i}-${j}`; o.textContent=`Unit ${i}-${j}`; sel.appendChild(o)
+    // Floor range: 4–22 only
+    // Unit range: 1–25, but unit 4 is replaced with 3A
+    const FLOORS = Array.from({length: 19}, (_, i) => i + 4) // [4,5,...,22]
+    const UNITS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,'23A',25]
+
+    const floorSel = document.getElementById('floorSelect')
+    document.getElementById('opt-floor-placeholder').textContent = t('disp_floor_placeholder')
+    FLOORS.forEach(i => {
+      const o = document.createElement('option')
+      o.value = i
+      o.textContent = t('disp_floor_prefix') + ' ' + i
+      floorSel.appendChild(o)
+    })
+
+    function onFloorChange() {
+      const floor = document.getElementById('floorSelect').value
+      const unitField = document.getElementById('unitField')
+      const unitSel = document.getElementById('unitSelect')
+      const confirm = document.getElementById('unitConfirm')
+
+      document.getElementById('unit').value = ''
+      confirm.style.display = 'none'
+
+      if (!floor) { unitField.style.display = 'none'; return }
+
+      unitSel.innerHTML = '<option value="">' + t('disp_unitnum_placeholder') + '</option>'
+      UNITS.forEach(j => {
+        const o = document.createElement('option')
+        o.value = floor + '-' + j
+        o.textContent = t('disp_unitnum_prefix') + ' ' + j
+        unitSel.appendChild(o)
+      })
+      unitField.style.display = 'block'
+    }
+
+    function onUnitChange() {
+      const val = document.getElementById('unitSelect').value
+      const confirm = document.getElementById('unitConfirm')
+      document.getElementById('unit').value = val
+      if (val) {
+        document.getElementById('unitConfirmVal').textContent = val
+        confirm.style.display = 'block'
+      } else {
+        confirm.style.display = 'none'
+      }
     }
 
     // Image preview on file select
@@ -117,6 +180,11 @@
       try {
         await apiAddParcel({ unit, courier, file })
         showToast(t('disp_success'),'success')
+        // Reset all fields
+        document.getElementById('floorSelect').value=''
+        document.getElementById('unitSelect').innerHTML=''
+        document.getElementById('unitField').style.display='none'
+        document.getElementById('unitConfirm').style.display='none'
         document.getElementById('unit').value=''
         document.getElementById('image').value=''
         document.getElementById('dispPin').value=''
