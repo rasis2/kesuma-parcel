@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kesuma Parcel Hub</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; overflow-x:hidden; }
+    body::before { content:''; position:fixed; top:-200px; left:50%; transform:translateX(-50%); width:600px; height:600px; background:radial-gradient(circle,rgba(var(--accent-rgb),0.08) 0%,transparent 70%); pointer-events:none; z-index:0; }
+    .topbar { position:fixed; top:14px; right:16px; z-index:100; display:flex; gap:8px; align-items:center; }
+    .hero { position:relative; z-index:1; text-align:center; padding:56px 20px 36px; max-width:540px; width:100%; }
+    .badge { display:inline-block; background:var(--accent-dim); border:1px solid rgba(var(--accent-rgb),0.3); color:var(--accent); font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; padding:5px 14px; border-radius:100px; margin-bottom:24px; animation:fadeIn 0.5s ease both; }
+    h1 { font-family:var(--heading-font); font-size:clamp(40px,8vw,60px); font-weight:800; line-height:1.05; letter-spacing:-2px; margin-bottom:14px; animation:fadeIn 0.5s 0.08s ease both; }
+    h1 span { color:var(--accent); }
+    .subtitle { color:var(--text-muted); font-size:14px; line-height:1.7; margin-bottom:44px; animation:fadeIn 0.5s 0.16s ease both; }
+    .cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; width:100%; max-width:440px; margin:0 auto; animation:fadeIn 0.5s 0.24s ease both; }
+    .card { position:relative; background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:22px 18px 18px; text-align:left; text-decoration:none; color:inherit; display:block; transition:border-color 0.2s,transform 0.2s,box-shadow 0.2s; overflow:hidden; }
+    .card::before { content:''; position:absolute; inset:0; opacity:0; transition:opacity 0.3s; border-radius:inherit; }
+    .card-disp::before { background:radial-gradient(circle at top left,rgba(var(--accent-rgb),0.12),transparent 60%); }
+    .card-owner::before { background:radial-gradient(circle at top left,rgba(76,175,125,0.1),transparent 60%); }
+    .card-admin { grid-column:1/-1; }
+    .card-admin::before { background:radial-gradient(circle at top left,rgba(224,92,92,0.08),transparent 60%); }
+    .card-about::before { background:radial-gradient(circle at top left,rgba(100,149,237,0.1),transparent 60%); }
+    .card-how::before { background:radial-gradient(circle at top left,rgba(180,100,220,0.1),transparent 60%); }
+    .card:hover { border-color:rgba(var(--accent-rgb),0.4); transform:translateY(-2px); box-shadow:var(--shadow); }
+    .card:hover::before { opacity:1; }
+    .card-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; margin-bottom:12px; font-size:17px; background:var(--accent-dim); }
+    .card-label { font-family:var(--heading-font); font-size:14px; font-weight:800; margin-bottom:4px; }
+    .card-desc { font-size:11px; color:var(--text-muted); line-height:1.5; }
+    .card-arrow { position:absolute; top:18px; right:16px; color:var(--text-muted); font-size:13px; transition:color 0.2s,transform 0.2s; }
+    .card:hover .card-arrow { color:var(--accent); transform:translate(2px,-2px); }
+    .footer-note { position:relative; z-index:1; margin-top:36px; font-size:11px; color:var(--text-muted); opacity:0.5; animation:fadeIn 0.5s 0.4s ease both; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div id="themeSwitcher"></div>
+    <div style="width:1px;height:16px;background:var(--border)"></div>
+    <div id="langSwitcher" style="display:flex;gap:5px"></div>
+  </div>
+  <div class="hero">
+    <div class="badge" id="txt-badge"></div>
+    <h1 id="txt-h1"></h1>
+    <p class="subtitle" id="txt-subtitle"></p>
+    <div class="cards">
+      <a href="dispatcher.html" class="card card-disp">
+        <div class="card-icon">📦</div>
+        <div class="card-label" id="txt-disp"></div>
+        <div class="card-desc" id="txt-disp-desc"></div>
+        <span class="card-arrow">↗</span>
+      </a>
+      <a href="owner.html" class="card card-owner">
+        <div class="card-icon">🔍</div>
+        <div class="card-label" id="txt-owner"></div>
+        <div class="card-desc" id="txt-owner-desc"></div>
+        <span class="card-arrow">↗</span>
+      </a>
+      <a href="admin.html" class="card card-admin">
+        <div class="card-icon">⚙️</div>
+        <div class="card-label" id="txt-admin"></div>
+        <div class="card-desc" id="txt-admin-desc"></div>
+        <span class="card-arrow">↗</span>
+      </a>
+      <a href="about.html" class="card card-about">
+        <div class="card-icon">✦</div>
+        <div class="card-label" id="txt-about"></div>
+        <div class="card-desc" id="txt-about-desc"></div>
+        <span class="card-arrow">↗</span>
+      </a>
+      <a href="how.html" class="card card-how">
+        <div class="card-icon">📖</div>
+        <div class="card-label" id="txt-how"></div>
+        <div class="card-desc" id="txt-how-desc"></div>
+        <span class="card-arrow">↗</span>
+      </a>
+      <a href="contact.html" class="card" style="grid-column:1/-1">
+        <div class="card-icon" style="background:var(--green-dim)">💬</div>
+        <div class="card-label" id="txt-contact"></div>
+        <div class="card-desc" id="txt-contact-desc"></div>
+        <span class="card-arrow">↗</span>
+      </a>
+      <a href="plan.html" class="card" style="grid-column:1/-1;background:var(--accent-dim);border-color:rgba(var(--accent-rgb),0.25)">
+        <div class="card-icon">🚀</div>
+        <div class="card-label" id="txt-plan"></div>
+        <div class="card-desc" id="txt-plan-desc"></div>
+        <span class="card-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+  <p class="footer-note" id="txt-footer"></p>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script>
+    renderLangSwitcher('langSwitcher')
+    renderThemeSwitcher('themeSwitcher')
+    document.getElementById('txt-badge').textContent = t('index_badge')
+    document.getElementById('txt-h1').innerHTML = t('index_title1')+'<br><span>'+t('index_title2')+'</span>'
+    document.getElementById('txt-subtitle').textContent = t('index_subtitle')
+    document.getElementById('txt-disp').textContent = t('card_dispatcher')
+    document.getElementById('txt-disp-desc').textContent = t('card_dispatcher_desc')
+    document.getElementById('txt-owner').textContent = t('card_owner')
+    document.getElementById('txt-owner-desc').textContent = t('card_owner_desc')
+    document.getElementById('txt-admin').textContent = t('card_admin')
+    document.getElementById('txt-admin-desc').textContent = t('card_admin_desc')
+    document.getElementById('txt-about').textContent = t('card_about')
+    document.getElementById('txt-about-desc').textContent = t('card_about_desc')
+    document.getElementById('txt-how').textContent = t('card_how')
+    document.getElementById('txt-how-desc').textContent = t('card_how_desc')
+    document.getElementById('txt-contact').textContent = t('contact_title')
+    document.getElementById('txt-contact-desc').textContent = t('contact_subtitle')
+    document.getElementById('txt-plan').textContent = t('plan_title')
+    document.getElementById('txt-plan-desc').textContent = t('plan_subtitle')
+    document.getElementById('txt-footer').textContent = t('footer')
+  </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cara Guna — Kesuma Parcel</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .how-section { margin-bottom: 28px; }
+    .how-header {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 16px;
+    }
+    .how-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .how-icon.gold { background: rgba(201,168,76,0.12); border: 1px solid rgba(201,168,76,0.2); }
+    .how-icon.green { background: rgba(76,175,125,0.12); border: 1px solid rgba(76,175,125,0.2); }
+    .how-icon.red { background: rgba(224,92,92,0.1); border: 1px solid rgba(224,92,92,0.2); }
+    .how-page-name { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: -0.3px; }
+    .how-page-role { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .step-list { list-style: none; padding: 0; }
+    .step-item {
+      display: flex; gap: 12px; padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .step-item:last-child { border-bottom: none; }
+    .step-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--surface3); border: 1px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      font-weight: 600; color: var(--text-muted); flex-shrink: 0; margin-top: 1px;
+    }
+    .step-text { font-size: 13px; line-height: 1.6; color: var(--text-soft); }
+    .step-text strong { color: var(--text); font-weight: 500; }
+    .pin-box {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--surface3); border: 1px solid var(--border2);
+      border-radius: 6px; padding: 3px 10px;
+      font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--gold);
+    }
+  </style>
+  <script src="js/theme.js"></script>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+
+  <main class="main">
+    <div class="page-header animate-in">
+      <div class="page-icon" style="background:rgba(180,100,220,0.12);border:1px solid rgba(180,100,220,0.2)">📖</div>
+      <h1 class="page-title" id="txt-title"></h1>
+      <p class="page-subtitle" id="txt-subtitle"></p>
+    </div>
+
+    <div id="howContent"></div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    renderNav('card_how')
+    document.getElementById('txt-title').textContent = t('how_title')
+    document.getElementById('txt-subtitle').textContent = t('how_subtitle')
+
+    const pages = {
+      ms: [
+        {
+          icon: '📦', color: 'gold', name: 'Dispatcher', role: 'Petugas Kaunter / Guard',
+          steps: [
+            { text: 'Pergi ke halaman <strong>Dispatcher</strong> dari menu utama.' },
+            { text: 'Masukkan <strong>PIN Dispatcher</strong>. PIN lalai ialah <span class="pin-box">5555</span>' },
+            { text: 'Pilih <strong>nombor unit</strong> yang menerima parsel tersebut.' },
+            { text: 'Pilih <strong>syarikat kurier</strong> (JnT, SPX, DHL, dll.).' },
+            { text: 'Ambil atau muat naik <strong>gambar parsel</strong> sebagai bukti.' },
+            { text: 'Tekan <strong>Hantar Parsel</strong>. Parsel akan disimpan dalam sistem.' },
+          ]
+        },
+        {
+          icon: '🔍', color: 'green', name: 'Pemilik Unit', role: 'Penghuni Kondominium',
+          steps: [
+            { text: 'Pergi ke halaman <strong>Pemilik</strong> dari menu utama.' },
+            { text: 'Masukkan <strong>nombor unit</strong> anda (contoh: 3-12).' },
+            { text: 'Masukkan <strong>emel</strong> ATAU <strong>nombor telefon</strong> yang berdaftar — tak perlu isi dua-dua.' },
+            { text: 'Tekan <strong>Semak</strong> untuk lihat senarai parsel anda.' },
+            { text: 'Parsel yang <strong>Pending</strong> bermakna belum diambil. Tekan <strong>Tandai Selesai</strong> selepas ambil.' },
+            { text: 'Gunakan <strong>penapis</strong> untuk tapis antara Pending, Selesai, atau Semua.' },
+          ]
+        },
+        {
+          icon: '⚙️', color: 'red', name: 'Admin', role: 'Pengurus / Pentadbir',
+          steps: [
+            { text: 'Pergi ke halaman <strong>Admin</strong> dari menu utama.' },
+            { text: 'Masukkan <strong>PIN Admin</strong>. PIN lalai ialah <span class="pin-box">1234</span>' },
+            { text: 'Dashboard akan paparkan <strong>statistik</strong> — jumlah unit, pending, dan selesai.' },
+            { text: 'Gunakan <strong>kotak carian</strong> untuk cari unit tertentu mengikut nombor, emel, atau telefon.' },
+            { text: 'Gunakan <strong>penapis</strong> untuk tapis unit yang ada parsel pending.' },
+            { text: 'Edit <strong>emel</strong> atau <strong>telefon</strong> pemilik terus dalam jadual, kemudian tekan <strong>Simpan</strong>.' },
+          ]
+        }
+      ],
+      en: [
+        {
+          icon: '📦', color: 'gold', name: 'Dispatcher', role: 'Counter Staff / Guard',
+          steps: [
+            { text: 'Go to the <strong>Dispatcher</strong> page from the main menu.' },
+            { text: 'Enter the <strong>Dispatcher PIN</strong>. Default PIN is <span class="pin-box">5555</span>' },
+            { text: 'Select the <strong>unit number</strong> receiving the parcel.' },
+            { text: 'Select the <strong>courier company</strong> (JnT, SPX, DHL, etc.).' },
+            { text: 'Take or upload a <strong>photo of the parcel</strong> as proof.' },
+            { text: 'Click <strong>Submit Parcel</strong>. The parcel will be saved in the system.' },
+          ]
+        },
+        {
+          icon: '🔍', color: 'green', name: 'Owner', role: 'Condominium Resident',
+          steps: [
+            { text: 'Go to the <strong>Owner</strong> page from the main menu.' },
+            { text: 'Enter your <strong>unit number</strong> (e.g. 3-12).' },
+            { text: 'Enter your registered <strong>email</strong> OR <strong>phone number</strong> — you don\'t need both.' },
+            { text: 'Click <strong>Check</strong> to view your parcel list.' },
+            { text: '<strong>Pending</strong> parcels have not been collected yet. Click <strong>Mark as Done</strong> after collecting.' },
+            { text: 'Use the <strong>filter</strong> to switch between Pending, Done, or All.' },
+          ]
+        },
+        {
+          icon: '⚙️', color: 'red', name: 'Admin', role: 'Manager / Administrator',
+          steps: [
+            { text: 'Go to the <strong>Admin</strong> page from the main menu.' },
+            { text: 'Enter the <strong>Admin PIN</strong>. Default PIN is <span class="pin-box">1234</span>' },
+            { text: 'The dashboard shows <strong>statistics</strong> — total units, pending, and done.' },
+            { text: 'Use the <strong>search box</strong> to find specific units by number, email, or phone.' },
+            { text: 'Use the <strong>filter</strong> to show only units with pending parcels.' },
+            { text: 'Edit the owner\'s <strong>email</strong> or <strong>phone</strong> directly in the table, then click <strong>Save</strong>.' },
+          ]
+        }
+      ],
+      zh: [
+        {
+          icon: '📦', color: 'gold', name: '派送员', role: '柜台工作人员 / 保安',
+          steps: [
+            { text: '从主菜单进入<strong>派送员</strong>页面。' },
+            { text: '输入<strong>派送员 PIN</strong>。默认 PIN 为 <span class="pin-box">5555</span>' },
+            { text: '选择接收包裹的<strong>单位号码</strong>。' },
+            { text: '选择<strong>快递公司</strong>（JnT、SPX、DHL 等）。' },
+            { text: '拍摄或上传<strong>包裹照片</strong>作为凭证。' },
+            { text: '点击<strong>提交包裹</strong>。包裹将保存在系统中。' },
+          ]
+        },
+        {
+          icon: '🔍', color: 'green', name: '业主', role: '公寓居民',
+          steps: [
+            { text: '从主菜单进入<strong>业主</strong>页面。' },
+            { text: '输入您的<strong>单位号码</strong>（例如：3-12）。' },
+            { text: '输入已注册的<strong>电子邮件</strong>或<strong>电话号码</strong>——无需两者都填。' },
+            { text: '点击<strong>查询</strong>以查看您的包裹列表。' },
+            { text: '<strong>待取件</strong>的包裹尚未领取。领取后请点击<strong>标记为已取件</strong>。' },
+            { text: '使用<strong>筛选器</strong>在待取件、已完成或全部之间切换。' },
+          ]
+        },
+        {
+          icon: '⚙️', color: 'red', name: '管理员', role: '经理 / 行政人员',
+          steps: [
+            { text: '从主菜单进入<strong>管理员</strong>页面。' },
+            { text: '输入<strong>管理员 PIN</strong>。默认 PIN 为 <span class="pin-box">1234</span>' },
+            { text: '仪表板显示<strong>统计数据</strong>——总单位数、待取件和已完成。' },
+            { text: '使用<strong>搜索框</strong>按单位号、电子邮件或电话查找特定单位。' },
+            { text: '使用<strong>筛选器</strong>显示有待取件包裹的单位。' },
+            { text: '直接在表格中编辑业主的<strong>电子邮件</strong>或<strong>电话</strong>，然后点击<strong>保存</strong>。' },
+          ]
+        }
+      ],
+      ta: [
+        {
+          icon: '📦', color: 'gold', name: 'டிஸ்பேட்சர்', role: 'கவுண்டர் ஊழியர் / காவலர்',
+          steps: [
+            { text: 'முதன்மை மெனுவிலிருந்து <strong>டிஸ்பேட்சர்</strong> பக்கத்திற்கு செல்லவும்.' },
+            { text: '<strong>டிஸ்பேட்சர் PIN</strong> உள்ளிடவும். இயல்புநிலை PIN: <span class="pin-box">5555</span>' },
+            { text: 'பார்சல் பெறும் <strong>யூனிட் எண்ணை</strong> தேர்ந்தெடுக்கவும்.' },
+            { text: '<strong>கூரியர் நிறுவனத்தை</strong> தேர்ந்தெடுக்கவும் (JnT, SPX, DHL, முதலியன).' },
+            { text: 'சான்றாக <strong>பார்சல் புகைப்படம்</strong> எடுக்கவும் அல்லது பதிவேற்றவும்.' },
+            { text: '<strong>பார்சல் சமர்ப்பி</strong> என்பதை கிளிக் செய்யவும். பார்சல் அமைப்பில் சேமிக்கப்படும்.' },
+          ]
+        },
+        {
+          icon: '🔍', color: 'green', name: 'உரிமையாளர்', role: 'அபார்ட்மென்ட் குடியிருப்பாளர்',
+          steps: [
+            { text: 'முதன்மை மெனுவிலிருந்து <strong>உரிமையாளர்</strong> பக்கத்திற்கு செல்லவும்.' },
+            { text: 'உங்கள் <strong>யூனிட் எண்ணை</strong> உள்ளிடவும் (எ.கா: 3-12).' },
+            { text: 'பதிவுசெய்த <strong>மின்னஞ்சல்</strong> அல்லது <strong>தொலைபேசி எண்</strong> உள்ளிடவும் — இரண்டும் தேவையில்லை.' },
+            { text: 'உங்கள் பார்சல் பட்டியலை பார்க்க <strong>சரிபார்</strong> கிளிக் செய்யவும்.' },
+            { text: '<strong>நிலுவையில்</strong> உள்ள பார்சல்கள் இன்னும் எடுக்கப்படவில்லை. எடுத்த பின் <strong>முடிந்தது என குறி</strong> கிளிக் செய்யவும்.' },
+            { text: 'நிலுவையில், முடிந்தது அல்லது அனைத்தும் இடையே மாற <strong>வடிப்பான்</strong> பயன்படுத்தவும்.' },
+          ]
+        },
+        {
+          icon: '⚙️', color: 'red', name: 'நிர்வாகி', role: 'மேலாளர் / நிர்வாகி',
+          steps: [
+            { text: 'முதன்மை மெனுவிலிருந்து <strong>நிர்வாகி</strong> பக்கத்திற்கு செல்லவும்.' },
+            { text: '<strong>நிர்வாக PIN</strong> உள்ளிடவும். இயல்புநிலை PIN: <span class="pin-box">1234</span>' },
+            { text: 'டாஷ்போர்டு <strong>புள்ளிவிவரங்களை</strong> காட்டுகிறது — மொத்த யூனிட்கள், நிலுவையில், முடிந்தது.' },
+            { text: 'குறிப்பிட்ட யூனிட்களை எண், மின்னஞ்சல் அல்லது தொலைபேசி மூலம் கண்டுபிடிக்க <strong>தேடல் பெட்டியை</strong> பயன்படுத்தவும்.' },
+            { text: 'நிலுவையில் உள்ள பார்சல்கள் உள்ள யூனிட்களை மட்டும் காட்ட <strong>வடிப்பான்</strong> பயன்படுத்தவும்.' },
+            { text: 'அட்டவணையில் நேரடியாக உரிமையாளரின் <strong>மின்னஞ்சல்</strong> அல்லது <strong>தொலைபேசியை</strong> திருத்தி <strong>சேமி</strong> கிளிக் செய்யவும்.' },
+          ]
+        }
+      ]
+    }
+
+    const lang = getLang()
+    const data = pages[lang] || pages.ms
+    const container = document.getElementById('howContent')
+
+    data.forEach((page, pi) => {
+      let stepsHtml = page.steps.map((s, si) => `
+        <li class="step-item">
+          <div class="step-num">${si + 1}</div>
+          <div class="step-text">${s.text}</div>
+        </li>`).join('')
+
+      container.innerHTML += `
+        <div class="section how-section animate-in" style="animation-delay:${pi * 0.08}s">
+          <div class="how-header">
+            <div class="how-icon ${page.color}">${page.icon}</div>
+            <div>
+              <div class="how-page-name">${page.name}</div>
+              <div class="how-page-role">${page.role}</div>
+            </div>
+          </div>
+          <ul class="step-list">${stepsHtml}</ul>
+        </div>`
+    })
+  </script>
+</body>
+</html>

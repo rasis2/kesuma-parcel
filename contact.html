@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hubungi — Kesuma Parcel</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .wa-btn {
+      display:flex; align-items:center; justify-content:center; gap:12px;
+      background:#25d366; color:#fff; border:none; border-radius:12px;
+      padding:16px 24px; font-family:var(--heading-font); font-size:16px;
+      font-weight:700; cursor:pointer; text-decoration:none; width:100%;
+      transition:all 0.2s; box-shadow:0 4px 20px rgba(37,211,102,0.3);
+    }
+    .wa-btn:hover { background:#22c55e; transform:translateY(-2px); box-shadow:0 8px 28px rgba(37,211,102,0.4); }
+    .wa-icon { width:28px; height:28px; }
+    .faq-item { border-bottom:1px solid var(--border); padding:16px 0; }
+    .faq-item:last-child { border-bottom:none; }
+    .faq-q { font-weight:600; font-size:14px; margin-bottom:6px; }
+    .faq-a { font-size:13px; color:var(--text-muted); line-height:1.6; }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+  <main class="main">
+    <div class="page-header animate-in">
+      <div class="page-icon green">💬</div>
+      <h1 class="page-title" id="txt-title"></h1>
+      <p class="page-subtitle" id="txt-subtitle"></p>
+    </div>
+
+    <div class="section animate-in" style="animation-delay:0.05s;text-align:center">
+      <div style="font-size:64px;margin-bottom:16px">👨‍💻</div>
+      <div style="font-family:var(--heading-font);font-size:18px;font-weight:800;margin-bottom:4px">Araduas Rasis Razali</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:24px">Developer & System Owner</div>
+      <a href="https://wa.me/60145269960" target="_blank" class="wa-btn">
+        <svg class="wa-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span id="txt-wa-btn"></span>
+      </a>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:12px">+60 14-526 9960</p>
+    </div>
+
+    <div class="section animate-in" style="animation-delay:0.1s">
+      <div class="section-title" id="txt-faq-title"></div>
+      <div id="faqList"></div>
+    </div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    renderNav('contact_title')
+    document.getElementById('txt-title').textContent = t('contact_title')
+    document.getElementById('txt-subtitle').textContent = t('contact_subtitle')
+    document.getElementById('txt-wa-btn').textContent = t('contact_btn')
+
+    const faqs = {
+      ms:[
+        {q:'PIN dispatcher atau admin saya lupa?',a:'Hubungi admin atau pengurusan kondominium untuk reset PIN.'},
+        {q:'Bagaimana nak daftar emel / telefon saya?',a:'Admin boleh kemaskini maklumat pemilik unit dari halaman Admin Dashboard.'},
+        {q:'Parsel saya tak muncul dalam senarai?',a:'Pastikan nombor unit, emel atau telefon anda betul. Kalau masih tak jumpa, hubungi kaunter atau sokongan.'},
+        {q:'Boleh akses sistem ini dari telefon?',a:'Ya! Sistem ini responsif dan boleh diakses dari mana-mana peranti. Dispatcher boleh snap gambar terus dari kamera.'},
+      ],
+      en:[
+        {q:'Forgot dispatcher or admin PIN?',a:'Contact the admin or condo management to reset your PIN.'},
+        {q:'How to register my email / phone?',a:'The admin can update owner details from the Admin Dashboard page.'},
+        {q:'My parcel doesn\'t appear in the list?',a:'Make sure your unit number, email or phone is correct. If still not found, contact the counter or support.'},
+        {q:'Can I access this system from my phone?',a:'Yes! The system is responsive and accessible from any device. Dispatchers can snap photos directly from the camera.'},
+      ],
+      zh:[
+        {q:'忘记派送员或管理员 PIN？',a:'请联系管理员或公寓管理层重置 PIN。'},
+        {q:'如何注册我的电子邮件/电话？',a:'管理员可以从管理员仪表板页面更新业主信息。'},
+        {q:'我的包裹没有出现在列表中？',a:'确保您的单位号码、电子邮件或电话正确。如仍未找到，请联系柜台或支持。'},
+        {q:'可以从手机访问此系统吗？',a:'可以！系统支持响应式设计，可从任何设备访问。派送员可直接用相机拍照。'},
+      ],
+      ta:[
+        {q:'டிஸ்பேட்சர் அல்லது நிர்வாக PIN மறந்துவிட்டீர்களா?',a:'PIN மீட்டமைக்க நிர்வாகி அல்லது கட்டிட நிர்வாகத்தை தொடர்பு கொள்ளவும்.'},
+        {q:'என் மின்னஞ்சல் / தொலைபேசியை எவ்வாறு பதிவு செய்வது?',a:'நிர்வாகி Admin Dashboard பக்கத்தில் இருந்து உரிமையாளர் விவரங்களை புதுப்பிக்கலாம்.'},
+        {q:'என் பார்சல் பட்டியலில் தோன்றவில்லை?',a:'உங்கள் யூனிட் எண், மின்னஞ்சல் அல்லது தொலைபேசி சரியாக இருக்கிறதா என சரிபார்க்கவும்.'},
+        {q:'இந்த அமைப்பை என் மொபைலில் பயன்படுத்தலாமா?',a:'ஆம்! இந்த அமைப்பு எந்த சாதனத்திலும் அணுகலாம். டிஸ்பேட்சர் நேரடியாக கேமராவில் புகைப்படம் எடுக்கலாம்.'},
+      ]
+    }
+
+    const lang = getLang()
+    const faqData = faqs[lang] || faqs.ms
+    const titles = {ms:'SOALAN LAZIM',en:'FAQ',zh:'常见问题',ta:'அடிக்கடி கேட்கப்படும் கேள்விகள்'}
+    document.getElementById('txt-faq-title').textContent = titles[lang]||titles.ms
+    document.getElementById('faqList').innerHTML = faqData.map(f=>`
+      <div class="faq-item">
+        <div class="faq-q">💬 ${f.q}</div>
+        <div class="faq-a">${f.a}</div>
+      </div>`).join('')
+  </script>
+</body>
+</html>

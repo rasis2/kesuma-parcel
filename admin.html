@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Kesuma Parcel</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .badge-urgent { background:rgba(224,92,92,0.15); color:var(--red); border:1px solid rgba(224,92,92,0.3); }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+  <div id="pinGate" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 57px)">
+    <div style="width:100%;max-width:360px;padding:20px">
+      <div class="section animate-in">
+        <div class="page-icon red" style="margin-bottom:18px">⚙️</div>
+        <h2 style="font-family:var(--heading-font);font-size:22px;font-weight:800;margin-bottom:5px;letter-spacing:-0.5px" id="txt-pin-title"></h2>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px" id="txt-pin-subtitle"></p>
+        <div class="field">
+          <label id="txt-pin-label"></label>
+          <input type="password" id="adminPin" maxlength="10" onkeydown="if(event.key==='Enter')unlockAdmin()">
+          <div class="error-text" id="pinError"></div>
+        </div>
+        <button class="btn btn-gold" onclick="unlockAdmin()" style="margin-top:4px" id="txt-enter-btn"></button>
+      </div>
+    </div>
+  </div>
+  <div id="dashboard" style="display:none">
+    <main class="main">
+      <div class="page-header animate-in">
+        <div class="page-icon red">⚙️</div>
+        <h1 class="page-title" id="txt-title"></h1>
+        <p class="page-subtitle" id="txt-subtitle"></p>
+      </div>
+      <div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;animation-delay:0.05s">
+        <div style="flex:1;padding:18px;text-align:center;border-right:1px solid var(--border)">
+          <div id="statTotal" class="num" style="font-size:26px">—</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-stat-units"></div>
+        </div>
+        <div style="flex:1;padding:18px;text-align:center;border-right:1px solid var(--border)">
+          <div id="statPending" class="num" style="font-size:26px;color:var(--accent)">—</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-stat-pending"></div>
+        </div>
+        <div style="flex:1;padding:18px;text-align:center">
+          <div id="statDone" class="num" style="font-size:26px;color:var(--green)">—</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px" id="txt-stat-done"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap" class="animate-in">
+        <input id="searchInput" oninput="applyFilters()" style="flex:1;min-width:120px;height:40px">
+        <div class="select-wrap" style="flex:0 0 150px">
+          <select id="statusFilter" onchange="applyFilters()" style="height:40px">
+            <option value="all" id="opt-all"></option>
+            <option value="hasPending" id="opt-pending"></option>
+            <option value="urgent" id="opt-urgent"></option>
+            <option value="recent" id="opt-recent"></option>
+            <option value="done" id="opt-done"></option>
+          </select>
+        </div>
+      </div>
+      <div class="section animate-in" style="padding:0;overflow:hidden;animation-delay:0.15s">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th id="col-unit"></th><th id="col-email"></th><th id="col-phone"></th>
+              <th style="text-align:center">⏳</th><th style="text-align:center">✓</th><th></th>
+            </tr></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="pagination animate-in" style="animation-delay:0.2s">
+        <button class="btn btn-outline" onclick="prevPage()" id="txt-prev"></button>
+        <span class="page-info" id="pageInfo">—</span>
+        <button class="btn btn-outline" onclick="nextPage()" id="txt-next"></button>
+      </div>
+    </main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/lightbox.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    renderNav('card_admin')
+    document.getElementById('txt-pin-title').textContent = t('admin_pin_title')
+    document.getElementById('txt-pin-subtitle').textContent = t('admin_pin_subtitle')
+    document.getElementById('txt-pin-label').textContent = t('admin_pin_label')
+    document.getElementById('adminPin').placeholder = '••••'
+    document.getElementById('txt-enter-btn').textContent = t('enter')
+    document.getElementById('txt-title').textContent = t('admin_title')
+    document.getElementById('txt-subtitle').textContent = t('admin_subtitle')
+    document.getElementById('txt-stat-units').textContent = t('admin_units')
+    document.getElementById('txt-stat-pending').textContent = t('admin_pending')
+    document.getElementById('txt-stat-done').textContent = t('admin_done')
+    document.getElementById('searchInput').placeholder = t('admin_search')
+    document.getElementById('opt-all').textContent = t('admin_filter_all')
+    document.getElementById('opt-pending').textContent = t('admin_filter_pending')
+    document.getElementById('opt-urgent').textContent = '🔴 ' + t('admin_urgent')
+    document.getElementById('opt-recent').textContent = '🟡 ' + t('admin_recent')
+    document.getElementById('opt-done').textContent = t('admin_filter_done')
+    document.getElementById('col-unit').textContent = t('admin_col_unit')
+    document.getElementById('col-email').textContent = t('admin_col_email')
+    document.getElementById('col-phone').textContent = t('admin_col_phone')
+    document.getElementById('txt-prev').textContent = t('admin_prev')
+    document.getElementById('txt-next').textContent = t('admin_next')
+
+    let allData=[], filtered=[], page=1
+    const perPage=15
+    const TWO_DAYS_MS = 2*24*60*60*1000
+
+    function showToast(msg,type='') {
+      const t2=document.getElementById('toast'); t2.textContent=msg; t2.className=`toast ${type} show`
+      setTimeout(()=>t2.className='toast',2800)
+    }
+
+    function unlockAdmin() {
+      const pin=document.getElementById('adminPin').value
+      if (pin!=='1234') { document.getElementById('pinError').textContent=t('admin_pin_error'); return }
+      document.getElementById('pinGate').style.display='none'
+      document.getElementById('dashboard').style.display='block'
+      loadAdmin()
+    }
+
+    function isUrgent(parcel) {
+      if (!parcel.createdAt || parcel.status !== 'Pending') return false
+      return (Date.now() - new Date(parcel.createdAt).getTime()) > TWO_DAYS_MS
+    }
+
+    function loadAdmin() {
+      apiAdmin().then(data=>{
+        allData=data
+        const totalPending=data.reduce((a,o)=>a+o.parcels.filter(p=>p.status==='Pending').length,0)
+        const totalDone=data.reduce((a,o)=>a+o.parcels.filter(p=>p.status==='Done').length,0)
+        document.getElementById('statTotal').textContent=data.length
+        document.getElementById('statPending').textContent=totalPending
+        document.getElementById('statDone').textContent=totalDone
+        applyFilters()
+      }).catch(()=>showToast(t('error_server'),'error-toast'))
+    }
+
+    function applyFilters() {
+      const search=document.getElementById('searchInput').value.toLowerCase()
+      const status=document.getElementById('statusFilter').value
+      filtered=allData.filter(o=>{
+        const matchSearch=o.unit.toLowerCase().includes(search)||o.email.toLowerCase().includes(search)||o.phone.includes(search)
+        const pending=o.parcels.filter(p=>p.status==='Pending')
+        const done=o.parcels.filter(p=>p.status==='Done').length
+        const hasUrgent=pending.some(p=>isUrgent(p))
+        const hasRecent=pending.some(p=>!isUrgent(p))
+        const matchStatus=status==='all'||(status==='hasPending'&&pending.length>0)||(status==='urgent'&&hasUrgent)||(status==='recent'&&hasRecent)||(status==='done'&&done>0&&pending.length===0)
+        return matchSearch&&matchStatus
+      })
+      page=1; render()
+    }
+
+    function render() {
+      const start=(page-1)*perPage
+      const slice=filtered.slice(start,start+perPage)
+      const totalPages=Math.max(1,Math.ceil(filtered.length/perPage))
+      document.getElementById('pageInfo').textContent=page+' / '+totalPages
+      let html=''
+      slice.forEach(o=>{
+        const pendingArr=o.parcels.filter(p=>p.status==='Pending')
+        const done=o.parcels.filter(p=>p.status==='Done').length
+        const urgentCount=pendingArr.filter(p=>isUrgent(p)).length
+        const pending=pendingArr.length
+        let pendingBadge=''
+        if (urgentCount>0) pendingBadge+=`<span class="badge-status badge-urgent" title="${t('admin_urgent')}">🔴 ${urgentCount}</span> `
+        if (pending-urgentCount>0) pendingBadge+=`<span class="badge-status badge-pending">🟡 ${pending-urgentCount}</span>`
+        if (pending===0) pendingBadge='<span style="color:var(--text-muted)">—</span>'
+        html+=`<tr>
+          <td><strong style="font-family:'JetBrains Mono',monospace;font-size:13px">${o.unit}</strong></td>
+          <td><input id="e-${o.unit}" value="${o.email}" style="min-width:150px"></td>
+          <td><input id="p-${o.unit}" value="${o.phone}" style="min-width:110px"></td>
+          <td style="text-align:center;white-space:nowrap">${pendingBadge}</td>
+          <td style="text-align:center">${done>0?'<span class="badge-status badge-done">'+done+'</span>':'<span style="color:var(--text-muted)">—</span>'}</td>
+          <td><button class="btn-green" onclick="saveOwner('${o.unit}')">${t('save')}</button></td>
+        </tr>`
+      })
+      document.getElementById('tableBody').innerHTML=html
+    }
+
+    function saveOwner(unit) {
+      const email=document.getElementById('e-'+unit).value
+      const phone=document.getElementById('p-'+unit).value
+      apiUpdateOwner(unit,{email,phone}).then(()=>{
+        const o=allData.find(x=>x.unit===unit)
+        if (o) { o.email=email; o.phone=phone }
+        showToast('Unit '+unit+' '+t('admin_saved'),'success')
+      }).catch(()=>showToast(t('admin_save_error'),'error-toast'))
+    }
+
+    function prevPage() { if(page>1){page--;render()} }
+    function nextPage() { if(page<Math.ceil(filtered.length/perPage)){page++;render()} }
+  </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pemilik — Kesuma Parcel</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+  <main class="main">
+    <div class="page-header animate-in">
+      <div class="page-icon green">🔍</div>
+      <h1 class="page-title" id="txt-title"></h1>
+      <p class="page-subtitle" id="txt-subtitle"></p>
+    </div>
+    <div class="section animate-in" style="animation-delay:0.05s">
+      <div class="section-title" id="txt-section"></div>
+      <div class="field">
+        <label id="txt-unit-label"></label>
+        <input id="unit" onkeydown="if(event.key==='Enter')checkOwner()">
+      </div>
+      <div class="field">
+        <label id="txt-email-label"></label>
+        <input id="email" type="email" onkeydown="if(event.key==='Enter')checkOwner()">
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin:6px 0">
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+        <span style="font-size:11px;color:var(--text-muted);font-weight:600">ATAU / OR</span>
+        <div style="flex:1;height:1px;background:var(--border)"></div>
+      </div>
+      <div class="field">
+        <label id="txt-phone-label"></label>
+        <input id="phone" type="tel" onkeydown="if(event.key==='Enter')checkOwner()">
+      </div>
+      <div class="error-text" id="ownerError" style="margin-top:4px"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:20px" class="animate-in">
+      <button class="btn btn-gold" onclick="checkOwner()" style="flex:1" id="txt-check-btn"></button>
+      <div class="select-wrap" style="flex:0 0 130px">
+        <select id="filterStatus" onchange="applyFilter()" style="height:44px">
+          <option value="all" id="opt-all"></option>
+          <option value="Pending" id="opt-pending"></option>
+          <option value="Done" id="opt-done"></option>
+        </select>
+      </div>
+    </div>
+    <div id="result"></div>
+  </main>
+  <div class="toast" id="toast"></div>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/lightbox.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    renderNav('card_owner')
+    document.getElementById('txt-title').textContent = t('owner_title')
+    document.getElementById('txt-subtitle').textContent = t('owner_subtitle')
+    document.getElementById('txt-section').textContent = t('owner_section')
+    document.getElementById('txt-unit-label').textContent = t('owner_unit_label')
+    document.getElementById('unit').placeholder = t('owner_unit_placeholder')
+    document.getElementById('txt-email-label').textContent = t('owner_email_label')
+    document.getElementById('email').placeholder = t('owner_email_placeholder')
+    document.getElementById('txt-phone-label').textContent = t('owner_phone_label')
+    document.getElementById('phone').placeholder = t('owner_phone_placeholder')
+    document.getElementById('txt-check-btn').textContent = '🔍  ' + t('check')
+    document.getElementById('opt-all').textContent = t('owner_filter_all')
+    document.getElementById('opt-pending').textContent = t('owner_filter_pending')
+    document.getElementById('opt-done').textContent = t('owner_filter_done')
+
+    let allParcels = []
+
+    function showToast(msg, type='') {
+      const t2=document.getElementById('toast'); t2.textContent=msg; t2.className=`toast ${type} show`
+      setTimeout(()=>t2.className='toast',2800)
+    }
+
+    function checkOwner() {
+      const unit=document.getElementById('unit').value.trim()
+      const email=document.getElementById('email').value.trim()
+      const phone=document.getElementById('phone').value.trim()
+      const err=document.getElementById('ownerError')
+      if (!unit||(!email&&!phone)) { err.textContent=t('owner_error_fill'); return }
+      err.textContent=''
+      document.getElementById('result').innerHTML='<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:24px">'+t('loading')+'</p>'
+      apiCheckOwner({unit,email,phone}).then(data=>{
+        if (data.error) { err.textContent=data.error; document.getElementById('result').innerHTML=''; return }
+        allParcels=data.parcels; applyFilter()
+      }).catch(()=>{ err.textContent=t('error_server'); document.getElementById('result').innerHTML='' })
+    }
+
+    function applyFilter() {
+      const filter=document.getElementById('filterStatus').value
+      renderParcels(filter==='all'?allParcels:allParcels.filter(p=>p.status===filter))
+    }
+
+    function fmtDate(ts) {
+      if (!ts) return '—'
+      const d = new Date(ts)
+      const dateStr = d.toLocaleDateString(getLang()==='zh'?'zh-MY':getLang()==='ta'?'ta-MY':'ms-MY',{day:'numeric',month:'short',year:'numeric'})
+      const timeStr = d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})
+      return dateStr + ' · ' + timeStr
+    }
+
+    function renderParcels(parcels) {
+      const el=document.getElementById('result')
+      if (parcels.length===0) { el.innerHTML='<div class="empty animate-in"><div class="empty-icon">📭</div><p>'+t('owner_empty')+'</p></div>'; return }
+      const pending=allParcels.filter(p=>p.status==='Pending').length
+      const done=allParcels.filter(p=>p.status==='Done').length
+      let html=`<div class="section animate-in" style="display:flex;gap:0;padding:0;overflow:hidden;margin-bottom:12px">
+        <div style="text-align:center;flex:1;padding:16px;border-right:1px solid var(--border)">
+          <div class="num" style="font-size:26px;color:var(--accent)">${pending}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t('pending')}</div>
+        </div>
+        <div style="text-align:center;flex:1;padding:16px;border-right:1px solid var(--border)">
+          <div class="num" style="font-size:26px;color:var(--green)">${done}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t('done')}</div>
+        </div>
+        <div style="text-align:center;flex:1;padding:16px">
+          <div class="num" style="font-size:26px">${allParcels.length}</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:2px">${t('total')}</div>
+        </div>
+      </div>`
+      parcels.forEach((p,i)=>{
+        html+=`<div class="parcel-card animate-in" style="animation-delay:${i*0.04}s">
+          <img class="parcel-img" src="${p.image}" alt="Parsel" onclick="openLightbox('${p.image}')" title="${t('enlarge_hint')}">
+          <div class="parcel-info">
+            <div class="parcel-courier">${p.courier}</div>
+            <div class="parcel-date">🕐 ${fmtDate(p.createdAt)}</div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+              <span class="badge-status ${p.status==='Pending'?'badge-pending':'badge-done'}">${p.status==='Pending'?'⏳ '+t('pending'):'✓ '+t('done')}</span>
+              ${p.status==='Pending'?'<button class="btn-green" onclick="markDone('+p.id+')">'+t('owner_mark_done')+'</button>':''}
+            </div>
+          </div>
+        </div>`
+      })
+      el.innerHTML=html
+    }
+
+    function markDone(id) {
+      apiMarkDone(id).then(()=>{ showToast(t('owner_marked'),'success'); checkOwner() })
+    }
+  </script>
+</body>
+</html>

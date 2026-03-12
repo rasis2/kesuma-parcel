@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tentang — Kesuma Parcel</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .about-hero { text-align:center; padding: 56px 0 40px; }
+    .avatar {
+      width: 88px; height: 88px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-dim), rgba(201,168,76,0.25));
+      border: 2px solid rgba(201,168,76,0.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; margin: 0 auto 20px;
+    }
+    .author-name {
+      font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800;
+      letter-spacing: -0.5px; margin-bottom: 6px;
+    }
+    .author-tag {
+      display: inline-block; background: var(--gold-dim);
+      border: 1px solid rgba(201,168,76,0.3); color: var(--gold);
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      padding: 4px 14px; border-radius: 100px; margin-bottom: 28px;
+    }
+    .vibe-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 100px; padding: 8px 16px; font-size: 12px;
+      color: var(--text-muted); margin-bottom: 40px;
+    }
+    .vibe-badge span { color: var(--text); font-weight: 500; }
+    .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .feature-item {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px;
+    }
+    .feature-item .fi-icon { font-size: 20px; margin-bottom: 8px; }
+    .feature-item .fi-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .feature-item .fi-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+    .tech-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tech-pill {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 100px; padding: 5px 14px; font-size: 12px;
+      font-family: 'JetBrains Mono', monospace; color: var(--text-soft);
+    }
+    .quote-block {
+      border-left: 2px solid var(--gold); padding: 12px 18px;
+      background: var(--gold-dim); border-radius: 0 10px 10px 0;
+      font-size: 14px; line-height: 1.7; color: var(--text-soft);
+      font-style: italic;
+    }
+  </style>
+  <script src="js/theme.js"></script>
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+
+  <main class="main">
+    <div class="about-hero animate-in">
+      <div class="avatar">👨‍💻</div>
+      <div class="author-name">Araduas Rasis Razali</div>
+      <div class="author-tag" id="txt-author-tag"></div>
+      <br>
+      <div class="vibe-badge">
+        ⚡ <span id="txt-vibe-coded"></span>
+      </div>
+    </div>
+
+    <div class="section animate-in" style="animation-delay:0.05s">
+      <div class="section-title" id="txt-story-title"></div>
+      <p id="txt-story" style="font-size:14px;line-height:1.8;color:var(--text-soft);margin-bottom:16px"></p>
+      <div class="quote-block" id="txt-quote"></div>
+    </div>
+
+    <div class="section animate-in" style="animation-delay:0.1s">
+      <div class="section-title" id="txt-features-title"></div>
+      <div class="feature-grid" id="featureGrid"></div>
+    </div>
+
+    <div class="section animate-in" style="animation-delay:0.15s">
+      <div class="section-title" id="txt-tech-title"></div>
+      <div class="tech-list">
+        <span class="tech-pill">HTML5</span>
+        <span class="tech-pill">CSS3</span>
+        <span class="tech-pill">Vanilla JS</span>
+        <span class="tech-pill">Node.js</span>
+        <span class="tech-pill">Express.js</span>
+        <span class="tech-pill">Tailwind CSS</span>
+        <span class="tech-pill">JetBrains Mono</span>
+        <span class="tech-pill">Syne</span>
+        <span class="tech-pill">DM Sans</span>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    renderNav('card_about')
+
+    const content = {
+      ms: {
+        author_tag: 'Pembangun & Vibe Coder',
+        vibe_coded: 'Projek ini di vibe coded sepenuhnya',
+        story_title: 'KISAH PROJEK',
+        story: 'Kesuma Parcel Hub lahir daripada keperluan sebenar — sistem pengurusan parsel yang mudah, pantas, dan boleh digunakan oleh sesiapa sahaja tanpa latihan yang rumit. Projek ini dibina dengan pendekatan vibe coding, di mana kod ditulis mengikut naluri dan kreativiti tanpa terlalu terikat dengan prosedur formal.',
+        quote: '"Buat benda yang berguna. Buat ia cantik. Buat ia mudah." — Araduas Rasis Razali',
+        features_title: 'CIRI UTAMA',
+        tech_title: 'TEKNOLOGI DIGUNAKAN',
+        features: [
+          { icon: '📦', title: 'Rekod Parsel', desc: 'Daftar parsel dengan gambar dan butiran lengkap' },
+          { icon: '🔔', title: 'Pantau Status', desc: 'Pemilik boleh semak sendiri status parsel mereka' },
+          { icon: '🌐', title: '4 Bahasa', desc: 'Melayu, Inggeris, Mandarin & Tamil' },
+          { icon: '🌙', title: 'Dark UI', desc: 'Antara muka gelap yang elegan dan moden' },
+        ]
+      },
+      en: {
+        author_tag: 'Developer & Vibe Coder',
+        vibe_coded: 'This project was fully vibe coded',
+        story_title: 'THE STORY',
+        story: 'Kesuma Parcel Hub was born from a real need — a parcel management system that is simple, fast, and usable by anyone without complex training. This project was built with a vibe coding approach, where code is written by intuition and creativity rather than rigid formal procedures.',
+        quote: '"Build something useful. Make it beautiful. Keep it simple." — Araduas Rasis Razali',
+        features_title: 'KEY FEATURES',
+        tech_title: 'TECHNOLOGIES USED',
+        features: [
+          { icon: '📦', title: 'Parcel Registry', desc: 'Log parcels with photos and full details' },
+          { icon: '🔔', title: 'Status Tracking', desc: 'Owners can check their parcel status themselves' },
+          { icon: '🌐', title: '4 Languages', desc: 'Malay, English, Mandarin & Tamil' },
+          { icon: '🌙', title: 'Dark UI', desc: 'Elegant and modern dark interface' },
+        ]
+      },
+      zh: {
+        author_tag: '开发者 & Vibe Coder',
+        vibe_coded: '本项目完全以 vibe coding 方式开发',
+        story_title: '项目故事',
+        story: 'Kesuma 包裹中心源于真实需求——一个简单、快速、无需复杂培训即可使用的包裹管理系统。本项目采用 vibe coding 方式构建，代码由直觉和创意驱动，而非严格的正式流程。',
+        quote: '"构建有用的东西。让它美观。保持简单。" — Araduas Rasis Razali',
+        features_title: '主要功能',
+        tech_title: '使用技术',
+        features: [
+          { icon: '📦', title: '包裹登记', desc: '登记包裹并附上照片和完整信息' },
+          { icon: '🔔', title: '状态追踪', desc: '业主可自行查看包裹状态' },
+          { icon: '🌐', title: '4种语言', desc: '马来语、英语、中文和泰米尔语' },
+          { icon: '🌙', title: '深色界面', desc: '优雅现代的深色用户界面' },
+        ]
+      },
+      ta: {
+        author_tag: 'டெவலப்பர் & Vibe Coder',
+        vibe_coded: 'இந்த திட்டம் முழுவதும் vibe coding மூலம் உருவாக்கப்பட்டது',
+        story_title: 'திட்டத்தின் கதை',
+        story: 'Kesuma பார்சல் மையம் ஒரு உண்மையான தேவையிலிருந்து பிறந்தது — எளிமையான, வேகமான, சிக்கலான பயிற்சி இல்லாமல் யாரும் பயன்படுத்தக்கூடிய பார்சல் மேலாண்மை அமைப்பு.',
+        quote: '"பயனுள்ளதை உருவாக்கு. அழகாக்கு. எளிமையாக வை." — Araduas Rasis Razali',
+        features_title: 'முக்கிய அம்சங்கள்',
+        tech_title: 'பயன்படுத்தப்பட்ட தொழில்நுட்பங்கள்',
+        features: [
+          { icon: '📦', title: 'பார்சல் பதிவு', desc: 'புகைப்படத்துடன் பார்சல்களை பதிவு செய்யவும்' },
+          { icon: '🔔', title: 'நிலை கண்காணிப்பு', desc: 'உரிமையாளர்கள் தாமே நிலையை சரிபார்க்கலாம்' },
+          { icon: '🌐', title: '4 மொழிகள்', desc: 'மலாய், ஆங்கிலம், மந்தரின் & தமிழ்' },
+          { icon: '🌙', title: 'இருண்ட UI', desc: 'நேர்த்தியான நவீன இருண்ட இடைமுகம்' },
+        ]
+      }
+    }
+
+    const lang = getLang()
+    const c = content[lang] || content.ms
+    document.getElementById('txt-author-tag').textContent = c.author_tag
+    document.getElementById('txt-vibe-coded').textContent = c.vibe_coded
+    document.getElementById('txt-story-title').textContent = c.story_title
+    document.getElementById('txt-story').textContent = c.story
+    document.getElementById('txt-quote').textContent = c.quote
+    document.getElementById('txt-features-title').textContent = c.features_title
+    document.getElementById('txt-tech-title').textContent = c.tech_title
+
+    const fg = document.getElementById('featureGrid')
+    c.features.forEach(f => {
+      fg.innerHTML += `<div class="feature-item animate-in">
+        <div class="fi-icon">${f.icon}</div>
+        <div class="fi-title">${f.title}</div>
+        <div class="fi-desc">${f.desc}</div>
+      </div>`
+    })
+  </script>
+</body>
+</html>

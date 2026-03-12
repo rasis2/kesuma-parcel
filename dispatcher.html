@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dispatcher — Kesuma Parcel</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="nav" id="mainNav"></nav>
+  <main class="main">
+    <div class="page-header animate-in">
+      <div class="page-icon gold">📦</div>
+      <h1 class="page-title" id="txt-title"></h1>
+      <p class="page-subtitle" id="txt-subtitle"></p>
+    </div>
+    <div class="section animate-in" style="animation-delay:0.05s">
+      <div class="section-title" id="txt-pin-section"></div>
+      <div class="field">
+        <label id="txt-pin-label"></label>
+        <input type="password" id="dispPin" maxlength="10">
+        <div class="error-text" id="pinError"></div>
+      </div>
+    </div>
+    <div class="section animate-in" style="animation-delay:0.1s">
+      <div class="section-title" id="txt-info-section"></div>
+      <div class="field">
+        <label id="txt-unit-label"></label>
+        <div class="select-wrap"><select id="unit"></select></div>
+      </div>
+      <div class="field">
+        <label id="txt-courier-label"></label>
+        <div class="select-wrap">
+          <select id="courier">
+            <option value="JnT">J&T Express</option>
+            <option value="SPX">Shopee Express (SPX)</option>
+            <option value="DHL">DHL</option>
+            <option value="PosLaju">Pos Laju</option>
+            <option value="Ninja Van">Ninja Van</option>
+            <option value="Lazada">Lazada Logistics</option>
+            <option value="Others">Lain-lain / Others</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label id="txt-image-label"></label>
+        <p style="font-size:11px;color:var(--text-muted);margin-bottom:8px" id="txt-snap-hint"></p>
+        <!-- accept image/*, capture=environment enables camera on mobile -->
+        <input type="file" id="image" accept="image/*" capture="environment">
+      </div>
+      <!-- Image preview -->
+      <div id="previewWrap" style="display:none;margin-top:10px">
+        <img id="preview" style="max-width:100%;max-height:220px;border-radius:10px;border:1px solid var(--border);cursor:zoom-in" onclick="openLightbox(this.src)">
+        <p style="font-size:11px;color:var(--text-muted);margin-top:6px" id="txt-enlarge-hint"></p>
+      </div>
+    </div>
+    <button class="btn btn-gold animate-in" style="animation-delay:0.15s" onclick="submitParcel()" id="txt-submit"></button>
+  </main>
+  <div class="toast" id="toast"></div>
+  <script src="js/i18n.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script src="js/lightbox.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    renderNav('card_dispatcher')
+    document.getElementById('txt-title').textContent = t('disp_title')
+    document.getElementById('txt-subtitle').textContent = t('disp_subtitle')
+    document.getElementById('txt-pin-section').textContent = t('disp_pin_section')
+    document.getElementById('txt-pin-label').textContent = t('disp_pin_label')
+    document.getElementById('dispPin').placeholder = t('disp_pin_placeholder')
+    document.getElementById('txt-info-section').textContent = t('disp_info_section')
+    document.getElementById('txt-unit-label').textContent = t('disp_unit_label')
+    document.getElementById('txt-courier-label').textContent = t('disp_courier_label')
+    document.getElementById('txt-image-label').textContent = t('disp_image_label')
+    document.getElementById('txt-snap-hint').textContent = '📷 ' + t('snap_hint')
+    document.getElementById('txt-submit').textContent = '✓  ' + t('submit')
+    document.getElementById('txt-enlarge-hint').textContent = t('enlarge_hint')
+
+    const sel = document.getElementById('unit')
+    sel.innerHTML = '<option value="">'+t('disp_unit_placeholder')+'</option>'
+    for (let i=1;i<=25;i++) for (let j=1;j<=25;j++) {
+      const o=document.createElement('option'); o.value=`${i}-${j}`; o.textContent=`Unit ${i}-${j}`; sel.appendChild(o)
+    }
+
+    // Image preview on file select
+    document.getElementById('image').addEventListener('change', function() {
+      const file = this.files[0]
+      if (!file) { document.getElementById('previewWrap').style.display='none'; return }
+      const reader = new FileReader()
+      reader.onload = e => {
+        document.getElementById('preview').src = e.target.result
+        document.getElementById('previewWrap').style.display = 'block'
+      }
+      reader.readAsDataURL(file)
+    })
+
+    function showToast(msg, type='') {
+      const t2=document.getElementById('toast'); t2.textContent=msg; t2.className=`toast ${type} show`
+      setTimeout(()=>t2.className='toast',2800)
+    }
+
+    async function submitParcel() {
+      const pin=document.getElementById('dispPin').value
+      const pinError=document.getElementById('pinError')
+      if (pin!=='5555') { pinError.textContent=t('disp_pin_error'); return }
+      pinError.textContent=''
+      const unit=document.getElementById('unit').value
+      const courier=document.getElementById('courier').value
+      const file=document.getElementById('image').files[0]
+      if (!unit) { showToast(t('disp_error_unit'),'error-toast'); return }
+      if (!file) { showToast(t('disp_error_image'),'error-toast'); return }
+
+      const btn=document.getElementById('txt-submit')
+      btn.textContent='⏳  Uploading...'
+      btn.disabled=true
+
+      try {
+        await apiAddParcel({ unit, courier, file })
+        showToast(t('disp_success'),'success')
+        document.getElementById('unit').value=''
+        document.getElementById('image').value=''
+        document.getElementById('dispPin').value=''
+        document.getElementById('previewWrap').style.display='none'
+      } catch(e) {
+        showToast(t('disp_error_server'),'error-toast')
+        console.error(e)
+      } finally {
+        btn.textContent='✓  ' + t('submit')
+        btn.disabled=false
+      }
+    }
+  </script>
+</body>
+</html>
