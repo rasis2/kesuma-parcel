@@ -1,0 +1,13 @@
+{
+  "name": "Kesuma Parcel Hub",
+  "short_name": "KesumaPH",
+  "description": "Sistem pengurusan parsel kondominium",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#c9a84c",
+  "icons": [
+    { "src": "favicon.ico", "sizes": "48x48", "type": "image/x-icon" },
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
